@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+
+  app:
+    container_name: app
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/src/app
+    command: go run cmd/main.go
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:15.0
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_DB=${PG_NAME}
+    healthcheck:
+      test: [ 'CMD-SHELL', 'psql -h localhost -U $${POSTGRES_USER} -c select 1 -d $${POSTGRES_DB}' ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/10-init.sql
+      - postgres-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  postgres-db:
