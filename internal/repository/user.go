@@ -7,21 +7,35 @@ import (
 )
 
 type UserRepo struct {
-	db *pgx.Conn
+	*pgx.Conn
 }
 
 func NewUser(db *pgx.Conn) *UserRepo {
-	return &UserRepo{db: db}
+	return &UserRepo{db}
 }
 
 func (r *UserRepo) Create(ctx context.Context, user model.User) (int, error) {
-	//TODO implement me
-	panic("implement me")
+
+	query := `INSERT INTO users (username) VALUES ($1) RETURNING id`
+	row := r.QueryRow(ctx, query, user.Username)
+
+	var id int
+	if err := row.Scan(&id); err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 func (r *UserRepo) Delete(ctx context.Context, id int) error {
-	//TODO implement me
-	panic("implement me")
+
+	query := `UPDATE users SET deleted_at = now() WHERE id = $1`
+	_, err := r.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *UserRepo) Chats(ctx context.Context, id int) (*[]model.ChatInfo, error) {

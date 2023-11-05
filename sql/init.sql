@@ -3,7 +3,7 @@ CREATE TABLE users
     id         SERIAL PRIMARY KEY,
     username   VARCHAR(255)            NOT NULL,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
-    deleted_at TIMESTAMP
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 CREATE TABLE chats
