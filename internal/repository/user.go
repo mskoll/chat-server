@@ -39,6 +39,17 @@ func (r *UserRepo) Delete(ctx context.Context, id int) error {
 }
 
 func (r *UserRepo) Chats(ctx context.Context, id int) (*[]model.ChatInfo, error) {
-	//TODO implement me
-	panic("implement me")
+
+	query := `SELECT ct.id, ct.name, ct.created_at, ct.deleted_at FROM chats ct 
+    INNER JOIN user_chat uct ON ct.id = uct.chat_id 
+    INNER JOIN messages mt ON ct.id = mt.chat_id WHERE uct.user_id = $1 
+                                                 ORDER BY mt.created_at`
+	row := r.QueryRow(ctx, query, id)
+
+	var chats []model.ChatInfo
+	if err := row.Scan(&chats); err != nil {
+		return nil, err
+	}
+
+	return &chats, nil
 }

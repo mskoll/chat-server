@@ -7,10 +7,10 @@ type User struct {
 }
 
 type UserInfo struct {
-	Id        int        `json:"id"`
-	Username  string     `json:"username"`
-	CreatedAt *time.Time `json:"createdAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+	Id        int
+	Username  string
+	CreatedAt *time.Time `db:"created_at"`
+	DeletedAt *time.Time `db:"deleted_at"`
 }
 
 type Chat struct {
@@ -19,11 +19,10 @@ type Chat struct {
 }
 
 type ChatInfo struct {
-	Id        int        `json:"id"`
-	Name      string     `json:"name"`
-	Users     []UserInfo `json:"users"`
-	CreatedAt *time.Time `json:"createdAt"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+	Id        int
+	Name      string
+	CreatedAt *time.Time `db:"created_at"`
+	DeletedAt *time.Time `db:"deleted_at"`
 }
 
 type Message struct {
@@ -37,5 +36,5 @@ type MessageInfo struct {
 	ChatId    int        `json:"chat"`
 	UserId    int        `json:"author"`
 	Content   string     `json:"text"`
-	CreatedAt *time.Time `json:"createdAt"`
+	CreatedAt *time.Time `db:"created_at"`
 }
