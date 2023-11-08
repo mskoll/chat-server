@@ -7,7 +7,7 @@ import (
 )
 
 type Postgres struct {
-	db *pgx.Conn
+	*pgx.Conn
 }
 
 func New() (*Postgres, error) {
@@ -16,9 +16,5 @@ func New() (*Postgres, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Postgres{db: db}, nil
-}
-
-func (p *Postgres) Close() {
-	p.db.Close(context.Background())
+	return &Postgres{db}, nil
 }
